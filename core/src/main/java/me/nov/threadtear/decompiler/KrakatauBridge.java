@@ -6,6 +6,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -17,7 +20,6 @@ import java.util.zip.ZipInputStream;
 public class KrakatauBridge implements IDecompilerBridge {
   private static boolean setup;
   private static Path krakatau;
-
 
   @Override
   public String decompile(File archive, String name, byte[] bytes) {
@@ -39,27 +41,19 @@ public class KrakatauBridge implements IDecompilerBridge {
       return sw.toString();
     }
     try {
-      File krakatauOut = Files.createTempFile(name.hashCode() + "-decompiled", ".jar").toFile();
-      ProcessBuilder pb = new ProcessBuilder("python", "decompile.py", "-out", krakatauOut.getAbsolutePath(),
-        krakatauIn.getAbsolutePath(), "-path", archive.getAbsolutePath(), "-skip");
-      pb.directory(krakatau.toFile());
-      pb.redirectError();
+      final String rtPath = getRuntimeJarPath();
       StringBuilder output = new StringBuilder();
+      File krakatauOut = Files.createTempFile(name.hashCode() + "-decompiled", ".jar").toFile();
+      List<String> args = new ArrayList<>(Arrays.asList("python", "decompile.py", "-skip", "-out", krakatauOut.getAbsolutePath(), krakatauIn.getAbsolutePath(), "-path", archive.getAbsolutePath()));
+      if(rtPath != null) args.addAll(Arrays.asList("-path", rtPath, "-nauto"));
+      else output.append("/* Cannot find rt.jar, this may cause decompilation errors */\n");
+
+      ProcessBuilder pb = new ProcessBuilder(args);
+      pb.directory(krakatau.toFile());
 
       pb.redirectErrorStream(true);
       Process p = pb.start();
 
-      BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-      String line;
-      output.append("/*\n");
-      while ((line = in.readLine()) != null) {
-        if (!line.startsWith("Loading") && !line.startsWith("Decompiling")) {
-          output.append("    ");
-          output.append(line);
-          output.append("\n");
-        }
-      }
-      output.append("*/\n");
       p.waitFor();
       output.append(readOutput(krakatauOut));
       return output.toString();
@@ -99,8 +93,7 @@ public class KrakatauBridge implements IDecompilerBridge {
   }
 
   @Override
-  public void setAggressive(boolean aggressive) {
-  }
+  public void setAggressive(boolean aggressive) {}
 
   /**
    * @return error, if failed
@@ -134,6 +127,11 @@ public class KrakatauBridge implements IDecompilerBridge {
       t.printStackTrace(pw);
       return sw.toString();
     }
+  }
+
+  private static String getRuntimeJarPath() {
+    String rtPath = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+    return new File(rtPath).exists() ? rtPath : null;
   }
 
   public static class KrakatauDecompilerInfo extends DecompilerInfo<KrakatauBridge> {

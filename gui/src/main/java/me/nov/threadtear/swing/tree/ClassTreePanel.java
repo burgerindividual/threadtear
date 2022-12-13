@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -209,23 +208,27 @@ public class ClassTreePanel extends JPanel implements ILoader {
   private void loadFile(String type) {
     try {
       switch (type) {
-        case "jar":
+        case "jar", "zip" -> {
           this.classes = JarIO.loadClasses(inputFile);
+
           if (classes.stream().anyMatch(c -> c.oldEntry.getCertificates() != null)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(
+              this,
               "<html>Warning: File is signed and may not load correctly if already " +
                 "modified, remove the signature<br>(<tt>META-INF\\MANIFEST.MF</tt" +
                 ">) and certificates (<tt>META-INF\\*.SF/.RSA</tt>) first!",
-              "Signature warning", JOptionPane.WARNING_MESSAGE);
+              "Signature warning",
+              JOptionPane.WARNING_MESSAGE
+            );
           }
-          break;
-        case "class":
+        }
+        case "class" -> {
           ClassNode node = Conversion.toNode(Files.readAllBytes(inputFile.toPath()));
-          this.classes =
-            new ArrayList<>(Collections.singletonList(new Clazz(node, new JarEntry(node.name), inputFile)));
-          break;
+          this.classes = new ArrayList<>(Collections.singletonList(new Clazz(node, new JarEntry(node.name), inputFile)));
+        }
       }
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       e.printStackTrace();
     }
   }

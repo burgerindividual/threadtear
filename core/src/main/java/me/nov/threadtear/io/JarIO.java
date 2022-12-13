@@ -1,54 +1,62 @@
 package me.nov.threadtear.io;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.stream.Stream;
-import java.util.zip.ZipException;
-
+import me.nov.threadtear.execution.Clazz;
 import me.nov.threadtear.logging.LogWrapper;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.tree.ClassNode;
 
-import me.nov.threadtear.execution.Clazz;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import java.util.stream.Stream;
+import java.util.zip.ZipException;
 
 public final class JarIO {
-  private JarIO() {
-  }
+  private JarIO() {}
 
-  public static ArrayList<Clazz> loadClasses(File jarFile) throws IOException {
-    ArrayList<Clazz> classes = new ArrayList<>();
+  public static List<Clazz> loadClasses(File jarFile) throws IOException {
+    List<Clazz> classes = new ArrayList<>();
+
     JarFile jar = new JarFile(jarFile);
-    Stream<JarEntry> str = jar.stream();
-    str.forEach(z -> readEntry(jar, z, classes));
+    jar.stream().forEach(jarEntry -> readEntry(jar, jarEntry, classes));
     jar.close();
+
     return classes;
   }
 
-  private static ArrayList<Clazz> readEntry(JarFile jar, JarEntry en, ArrayList<Clazz> classes) {
-    String name = en.getName();
-    try (InputStream jis = jar.getInputStream(en)) {
-      byte[] bytes = IOUtils.toByteArray(jis);
+  private static void readEntry(JarFile jar, JarEntry jarEntry, List<Clazz> classes) {
+    String name = jarEntry.getName();
+
+    try (InputStream in = jar.getInputStream(jarEntry)) {
+      byte[] bytes = IOUtils.toByteArray(in);
+
       if (isClassFile(bytes)) {
         try {
           final ClassNode cn = Conversion.toNode(bytes);
-          if (cn != null && (cn.superName != null || (cn.name != null && cn.name.equals("java/lang/Object")))) {
-            classes.add(new Clazz(cn, en, jar));
+
+          if (cn.superName != null || cn.name != null && cn.name.equals("java/lang/Object")) {
+            classes.add(new Clazz(cn, jarEntry, jar));
           }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
           LogWrapper.logger.error("Failed to load file {}", e, name);
         }
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       e.printStackTrace();
     }
-    return classes;
   }
 
   public static final String CERT_REGEX = "META-INF/.+(\\.SF|\\.RSA|\\.DSA)";
 
-  public static void saveAsJar(File original, File output, List<Clazz> classes, boolean noSignature,
-                               boolean watermark) {
+  public static void saveAsJar(File original, File output, List<Clazz> classes, boolean noSignature, boolean watermark) {
     try {
       JarOutputStream out = new JarOutputStream(new FileOutputStream(output));
       Rewriting:
