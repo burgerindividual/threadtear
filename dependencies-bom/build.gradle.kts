@@ -33,6 +33,7 @@ dependencies {
         apiv("org.apache.commons:commons-configuration2")
         apiv("commons-beanutils:commons-beanutils")
         apiv("com.github.leibnitz27:cfr")
+        apiv("org.quiltmc:quiltflower")
         apiv("com.fifesoft:rsyntaxtextarea")
         apiv("com.github.jgraph:jgraphx")
         apiv("ch.qos.logback:logback-classic")

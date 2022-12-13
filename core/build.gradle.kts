@@ -19,7 +19,8 @@ dependencies {
     implementation("org.ow2.asm:asm-commons")
 
     implementation("com.github.leibnitz27:cfr") { isChanging = true }
+    implementation("org.quiltmc:quiltflower")
     implementation("ch.qos.logback:logback-classic")
 
-    externalLib("fernflower-15-05-20")
+    //externalLib("fernflower-13-12-22")
 }

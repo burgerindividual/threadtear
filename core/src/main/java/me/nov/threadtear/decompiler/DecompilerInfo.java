@@ -17,10 +17,12 @@ public abstract class DecompilerInfo<T extends IDecompilerBridge> {
   }
 
   public static List<DecompilerInfo<?>> getDecompilerInfos() {
-    List<DecompilerInfo<?>> list = new ArrayList<>(3);
+    List<DecompilerInfo<?>> list = new ArrayList<>(4);
+
     list.add(new CFRBridge.CFRDecompilerInfo());
-    list.add(new FernflowerBridge.FernflowerDecompilerInfo());
+    list.add(new QuiltflowerBridge.QuiltflowerDecompilerInfo());
     list.add(new KrakatauBridge.KrakatauDecompilerInfo());
+
     return list;
   }
 }
