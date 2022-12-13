@@ -75,3 +75,13 @@ val runGui by tasks.registering(JavaExec::class) {
     main = "me.nov.threadtear.Threadtear"
     classpath("$rootDir/dist/threadtear-${project.version}.jar")
 }
+
+tasks.withType<Jar> {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    manifest {
+        attributes("Main-Class" to "me.nov.threadtear.Threadtear")
+    }
+
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}

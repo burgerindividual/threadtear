@@ -1,15 +1,14 @@
 package me.nov.threadtear.swing.laf;
 
-import java.awt.Color;
-
-import javax.swing.plaf.ColorUIResource;
-
 import com.github.weisj.darklaf.LafManager;
 import com.github.weisj.darklaf.theme.*;
-import com.github.weisj.darklaf.theme.info.ColorToneRule;
-import com.github.weisj.darklaf.theme.info.ContrastRule;
 import com.github.weisj.darklaf.theme.info.DefaultThemeProvider;
-import com.github.weisj.darklaf.theme.info.PreferredThemeStyle;
+import com.github.weisj.darklaf.theme.spec.ColorToneRule;
+import com.github.weisj.darklaf.theme.spec.ContrastRule;
+import com.github.weisj.darklaf.theme.spec.PreferredThemeStyle;
+
+import javax.swing.plaf.ColorUIResource;
+import java.awt.*;
 
 public class LookAndFeel {
 

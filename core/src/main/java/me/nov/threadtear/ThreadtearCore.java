@@ -17,9 +17,6 @@ import java.util.stream.Collectors;
 public class ThreadtearCore {
   public static void configureEnvironment() throws Exception {
     System.setProperty("file.encoding", "UTF-8");
-    Field charset = Charset.class.getDeclaredField("defaultCharset");
-    charset.setAccessible(true);
-    charset.set(null, null);
   }
 
   public static void configureLoggers() {
