@@ -12,7 +12,7 @@ import org.objectweb.asm.tree.ClassNode;
 public class Clazz {
 
   public boolean transform = true;
-  public final ClassNode node;
+  public ClassNode node;
   public final JarEntry oldEntry;
   public final Object inputFile;
   public final ArrayList<String> failures = new ArrayList<>();

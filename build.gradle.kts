@@ -21,13 +21,16 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
-            url = uri("https://jitpack.io")
+            url = uri("https://jitpack.io/")
         }
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         }
         maven {
-            url = uri("https://maven.quiltmc.org/repository/release")
+            url = uri("https://maven.quiltmc.org/repository/release/")
+        }
+        maven {
+            url = uri("https://maven.fabricmc.net/")
         }
     }
 

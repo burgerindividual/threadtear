@@ -22,5 +22,7 @@ dependencies {
     implementation("org.quiltmc:quiltflower")
     implementation("ch.qos.logback:logback-classic")
 
+    implementation("net.fabricmc:mapping-io")
+
     //externalLib("fernflower-13-12-22")
 }

@@ -7,6 +7,7 @@ import me.nov.threadtear.execution.analysis.*;
 import me.nov.threadtear.execution.cleanup.GuessParameterNames;
 import me.nov.threadtear.execution.cleanup.InlineMethods;
 import me.nov.threadtear.execution.cleanup.InlineUnchangedFields;
+import me.nov.threadtear.execution.cleanup.Remapper;
 import me.nov.threadtear.execution.cleanup.remove.RemoveAttributes;
 import me.nov.threadtear.execution.cleanup.remove.RemoveUnnecessary;
 import me.nov.threadtear.execution.cleanup.remove.RemoveUnusedVariables;
@@ -33,6 +34,7 @@ public class ExecutionLink {
     add(InlineMethods.class);
     add(InlineUnchangedFields.class);
     add(GuessParameterNames.class);
+    add(Remapper.class);
     add(RemoveUnnecessary.class);
     add(RemoveUnusedVariables.class);
     add(RemoveAttributes.class);
