@@ -5,6 +5,7 @@ import com.github.weisj.darklaf.components.border.DarkBorders;
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.util.mxCellRenderer;
+import me.nov.threadtear.Utils;
 import me.nov.threadtear.graph.Block;
 import me.nov.threadtear.graph.CFGraph;
 import me.nov.threadtear.graph.CFGraph.CFGComponent;
@@ -22,7 +23,6 @@ import org.objectweb.asm.tree.MethodNode;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -84,23 +84,21 @@ public class CFGPanel extends JPanel {
     save.setIcon(SwingUtils.getIcon("save.svg", true));
     save.addActionListener(l -> {
       File parentDir = FileSystemView.getFileSystemView().getHomeDirectory();
-      JFileChooser jfc = new JFileChooser(parentDir);
-      jfc.setAcceptAllFileFilterUsed(false);
-      jfc.setFileFilter(new FileNameExtensionFilter("Portable Network Graphics (.png)", "png"));
-      jfc.addChoosableFileFilter(new FileNameExtensionFilter("Bitmap image file (.bmp)", "bmp"));
-      if (mn.name.length() < 32) {
-        jfc.setSelectedFile(new File(parentDir, mn.name.replaceAll("[^a-zA-Z0-9-_.]", "_") + ".png"));
-      } else {
-        jfc.setSelectedFile(new File(parentDir, "method-" + (mn.name + mn.desc).hashCode() + ".png"));
-      }
-      int result = jfc.showSaveDialog(CFGPanel.this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File output = jfc.getSelectedFile();
-        String type = ((FileNameExtensionFilter) jfc.getFileFilter()).getExtensions()[0];
+      String defaultPath;
+
+      if (mn.name.length() < 32) defaultPath = new File(parentDir, mn.name.replaceAll("[^a-zA-Z0-9-_.]", "_") + ".png").getAbsolutePath();
+      else defaultPath = new File(parentDir, "method-" + (mn.name + mn.desc).hashCode() + ".png").getAbsolutePath();
+
+      File output = Utils.saveFileDialog("Save as image", defaultPath, "*.png", "*bmp");
+
+      if (output != null) {
+        String type = output.getName().substring(output.getName().lastIndexOf('.') + 1);
         BufferedImage image = mxCellRenderer.createBufferedImage(graph, null, 2, null, true, null);
+
         try {
           ImageIO.write(Images.watermark(image), type, output);
-        } catch (IOException ioex) {
+        }
+        catch (IOException ioex) {
           ioex.printStackTrace();
         }
       }

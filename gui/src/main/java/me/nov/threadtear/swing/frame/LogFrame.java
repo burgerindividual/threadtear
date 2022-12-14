@@ -1,24 +1,24 @@
 package me.nov.threadtear.swing.frame;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
-import java.io.*;
-import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.BadLocationException;
-
 import com.github.weisj.darklaf.components.OverlayScrollPane;
 import com.github.weisj.darklaf.components.border.DarkBorders;
-
+import me.nov.threadtear.Utils;
 import me.nov.threadtear.logging.Appender;
 import me.nov.threadtear.logging.LogWrapper;
 import me.nov.threadtear.swing.SwingUtils;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LogFrame extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -51,19 +51,16 @@ public class LogFrame extends JDialog {
     JButton save = new JButton("Save to file");
     save.addActionListener(e -> {
       File inputFile = new File(System.getProperty("user.home"), dateFormat.format(new Date()) + ".log");
-      JFileChooser jfc = new JFileChooser(inputFile.getParentFile());
-      jfc.setAcceptAllFileFilterUsed(false);
-      jfc.setSelectedFile(inputFile);
-      jfc.setDialogTitle("Save log to file");
-      jfc.setFileFilter(new FileNameExtensionFilter("Log file (*.log)", "log"));
-      int result = jfc.showSaveDialog(this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File output = jfc.getSelectedFile();
+      File output = Utils.saveFileDialog("Save log to file", inputFile.getParentFile().getAbsolutePath(), "*.log");
+
+      if (output != null) {
         try {
           Files.write(output.toPath(), area.getText().getBytes());
-        } catch (IOException e1) {
+        }
+        catch (IOException e1) {
           e1.printStackTrace();
         }
+
         LogWrapper.logger.info("Saved log to " + output.getAbsolutePath());
       }
     });

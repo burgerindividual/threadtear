@@ -17,6 +17,15 @@ dependencies {
 
     implementation("commons-io:commons-io")
     implementation("org.apache.commons:commons-configuration2")
+
+    implementation(platform("org.lwjgl:lwjgl-bom"))
+    implementation("org.lwjgl:lwjgl")
+    implementation("org.lwjgl:lwjgl-tinyfd")
+
+    rootProject.extra["lwjgl.natives"].toString().split(",").forEach {
+        runtimeOnly("org.lwjgl:lwjgl::$it")
+        runtimeOnly("org.lwjgl:lwjgl-tinyfd::$it")
+    }
 }
 
 tasks.shadowJar {

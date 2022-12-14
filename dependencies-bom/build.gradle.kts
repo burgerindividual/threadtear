@@ -47,5 +47,6 @@ dependencies {
         apiv("org.ow2.asm:asm-util", "asm")
         apiv("org.ow2.asm:asm-commons", "asm")
         apiv("net.fabricmc:mapping-io")
+        apiv("org.lwjgl:lwjgl-bom", "lwjgl")
     }
 }

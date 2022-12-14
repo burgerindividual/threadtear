@@ -2,6 +2,7 @@ package me.nov.threadtear.swing.panel;
 
 import me.nov.threadtear.CoreUtils;
 import me.nov.threadtear.Threadtear;
+import me.nov.threadtear.Utils;
 import me.nov.threadtear.execution.Execution;
 import me.nov.threadtear.io.JarIO;
 import me.nov.threadtear.logging.LogWrapper;
@@ -16,7 +17,6 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -73,31 +73,16 @@ public class ConfigurationPanel extends JPanel {
     panel.add(Box.createHorizontalGlue());
     JButton loadCfg = new JButton("Load config", SwingUtils.getIcon("load_config.svg", true));
     loadCfg.addActionListener(l -> {
-      JFileChooser jfc = new JFileChooser(System.getProperty("user.home"));
-      jfc.setAcceptAllFileFilterUsed(false);
-      jfc.setDialogTitle("Load config");
-      jfc.setFileFilter(new FileNameExtensionFilter("Threadtear config file (*.tcf)", "tcf"));
-      int result = jfc.showOpenDialog(this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File input = jfc.getSelectedFile();
-        loadConfig(input);
-      }
+      File input = Utils.openFileDialog("Load config", null, "*.tcf");
+      if (input != null) loadConfig(input);
     });
     panel.add(loadCfg);
     JButton saveCfg = new JButton("Save config");
     saveCfg.setIcon(SwingUtils.getIcon("save_config.svg", true));
     saveCfg.setDisabledIcon(SwingUtils.getIcon("save_config_disabled.svg", true));
     saveCfg.addActionListener(l -> {
-      JFileChooser jfc = new JFileChooser(System.getProperty("user.home"));
-      jfc.setAcceptAllFileFilterUsed(false);
-      jfc.setSelectedFile(new File(jfc.getCurrentDirectory(), "config.tcf"));
-      jfc.setDialogTitle("Save config");
-      jfc.setFileFilter(new FileNameExtensionFilter("Threadtear config file (*.tcf)", "tcf"));
-      int result = jfc.showSaveDialog(this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File output = jfc.getSelectedFile();
-        saveConfig(output);
-      }
+      File output = Utils.saveFileDialog("Save config", null, "*.tcf");
+      if (output != null) saveConfig(output);
     });
     panel.add(saveCfg);
     save = new JButton("Save as jar file", SwingUtils.getIcon("save.svg", true));
@@ -123,18 +108,14 @@ public class ConfigurationPanel extends JPanel {
           ta, "Consider donating",
           JOptionPane.INFORMATION_MESSAGE, SwingUtils.getIcon("bit_qr.png", 150, 150));
       }
-      JFileChooser jfc = new JFileChooser(inputFile.getParentFile());
-      jfc.setAcceptAllFileFilterUsed(false);
-      jfc.setSelectedFile(new File(FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + ".jar"));
-      jfc.setDialogTitle("Save transformed jar archive");
-      jfc.setFileFilter(new FileNameExtensionFilter("Java Package (*.jar)", "jar"));
-      int result = jfc.showSaveDialog(this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File output = jfc.getSelectedFile();
-        JarIO.saveAsJar(inputFile, output, main.listPanel.classList.classes, removeSignature.isSelected(),
-          watermark.isSelected());
+
+      File output = Utils.saveFileDialog("Save as jar file", FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + ".jar", "*.jar");
+
+      if (output != null) {
+        JarIO.saveAsJar(inputFile, output, main.listPanel.classList.classes, removeSignature.isSelected(), watermark.isSelected());
         LogWrapper.logger.info("Saved to " + output.getAbsolutePath());
       }
+
       save.setEnabled(true);
     });
     panel.add(save);

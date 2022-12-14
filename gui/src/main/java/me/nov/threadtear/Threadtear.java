@@ -15,7 +15,6 @@ import me.nov.threadtear.swing.panel.TreePanel;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -76,17 +75,8 @@ public class Threadtear extends JFrame {
     JMenuItem load = new JMenuItem("Load file");
     load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
     load.addActionListener(l -> {
-      UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-      JFileChooser jfc = new JFileChooser(System.getProperty("user.home"));
-      jfc.setMultiSelectionEnabled(false);
-      jfc.setAcceptAllFileFilterUsed(false);
-      jfc.setDialogTitle("Load file");
-      jfc.setFileFilter(new FileNameExtensionFilter("Java class or class archive", "jar", "class"));
-      int result = jfc.showOpenDialog(this);
-      if (result == JFileChooser.APPROVE_OPTION) {
-        File input = jfc.getSelectedFile();
-        listPanel.classList.onFileDrop(input);
-      }
+      File input = Utils.openFileDialog("Load file", null, "*.jar", "*.zip");
+      if (input != null) listPanel.classList.onFileDrop(input);
     });
     file.add(load);
     bar.add(file);
