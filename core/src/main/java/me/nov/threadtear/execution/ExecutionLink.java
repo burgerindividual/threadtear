@@ -4,6 +4,7 @@ import me.nov.threadtear.execution.allatori.ExpirationDateRemoverAllatori;
 import me.nov.threadtear.execution.allatori.JunkRemoverAllatori;
 import me.nov.threadtear.execution.allatori.StringObfuscationAllatori;
 import me.nov.threadtear.execution.analysis.*;
+import me.nov.threadtear.execution.cleanup.GuessParameterNames;
 import me.nov.threadtear.execution.cleanup.InlineMethods;
 import me.nov.threadtear.execution.cleanup.InlineUnchangedFields;
 import me.nov.threadtear.execution.cleanup.remove.RemoveAttributes;
@@ -28,9 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExecutionLink {
-  public static final List<Class<? extends Execution>> executions = new ArrayList<Class<? extends Execution>>() {{
+  public static final List<Class<? extends Execution>> executions = new ArrayList<>() {{
     add(InlineMethods.class);
     add(InlineUnchangedFields.class);
+    add(GuessParameterNames.class);
     add(RemoveUnnecessary.class);
     add(RemoveUnusedVariables.class);
     add(RemoveAttributes.class);
