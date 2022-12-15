@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 
 import me.nov.threadtear.logging.LogWrapper;
+import me.nov.threadtear.util.asm.SignatureValidator;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -31,16 +32,22 @@ public final class Conversion {
   public static ClassNode toNode(final byte[] bytez) {
     ClassReader cr = new ClassReader(bytez);
     ClassNode cn = new ClassNode();
+
     try {
       cr.accept(cn, ClassReader.EXPAND_FRAMES);
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       try {
         cr.accept(cn, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
-      } catch (Exception e2) {
+      }
+      catch (Exception e2) {
         e2.printStackTrace();
         LogWrapper.logger.error("Failed to load class ", e2);
       }
     }
+
+    SignatureValidator.validateSignatures(cn);
+
     return cn;
   }
 

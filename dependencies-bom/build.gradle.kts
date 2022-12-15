@@ -46,6 +46,7 @@ dependencies {
         apiv("org.ow2.asm:asm-analysis", "asm")
         apiv("org.ow2.asm:asm-util", "asm")
         apiv("org.ow2.asm:asm-commons", "asm")
+        apiv("com.github.Col-E:CAFED00D", "cafedude")
         apiv("net.fabricmc:mapping-io")
         apiv("org.lwjgl:lwjgl-bom", "lwjgl")
     }

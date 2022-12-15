@@ -1,5 +1,8 @@
 package me.nov.threadtear.io;
 
+import me.coley.cafedude.classfile.ClassFile;
+import me.coley.cafedude.io.ClassFileReader;
+import me.coley.cafedude.io.ClassFileWriter;
 import me.nov.threadtear.execution.Clazz;
 import me.nov.threadtear.logging.LogWrapper;
 import org.apache.commons.io.IOUtils;
@@ -38,6 +41,10 @@ public final class JarIO {
 
       if (isClassFile(bytes)) {
         try {
+          ClassFileReader reader = new ClassFileReader();
+          ClassFile classFile = reader.read(bytes);
+          bytes = new ClassFileWriter().write(classFile);
+
           final ClassNode cn = Conversion.toNode(bytes);
 
           if (cn.superName != null || cn.name != null && cn.name.equals("java/lang/Object")) {
