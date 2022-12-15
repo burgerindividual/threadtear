@@ -11,7 +11,7 @@ import java.security.Permission;
 
 public final class VMSecurityManager extends SecurityManager {
   private static final String granted = "sun\\..*";
-  private boolean grantAll;
+  public boolean grantAll;
   private boolean checkReflection = true;
 
   @Override

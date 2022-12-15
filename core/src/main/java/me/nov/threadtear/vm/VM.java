@@ -157,7 +157,7 @@ public class VM extends ClassLoader implements Opcodes {
     String name = node.name.replace('/', '.');
     byte[] clazz = convert(name, node, removeClinit, p);
     Class<?> loadedClass = bytesToClass(name, clazz);
-    loaded.put(name, loadedClass);
+    if (loadedClass != null) loaded.put(name, loadedClass);
   }
 
   public boolean isLoaded(String name) {

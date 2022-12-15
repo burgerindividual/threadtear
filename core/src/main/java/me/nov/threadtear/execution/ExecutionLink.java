@@ -60,6 +60,7 @@ public class ExecutionLink {
     add(AccessObfuscationZKM.class);
     add(FlowObfuscationZKM.class);
     add(DESObfuscationZKM.class);
+    add(NewStringObfuscationZKM.class);
 
     add(StringObfuscationAllatori.class);
     add(ExpirationDateRemoverAllatori.class);

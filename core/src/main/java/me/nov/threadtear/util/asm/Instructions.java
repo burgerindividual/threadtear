@@ -2,6 +2,8 @@ package me.nov.threadtear.util.asm;
 
 import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
@@ -332,5 +334,29 @@ public final class Instructions implements Opcodes {
     InsnList list = new InsnList();
     list.add(ain);
     return list;
+  }
+
+  public static Stream<AbstractInsnNode> searchOpcodeSequences(InsnList insns, int... sequence) {
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new OpcodeSequenceIterator(insns, sequence), 0), false);
+  }
+
+  private static class OpcodeSequenceIterator implements Iterator<AbstractInsnNode> {
+    private final InsnList insns;
+    private final int[] sequence;
+
+    public OpcodeSequenceIterator(InsnList insns, int[] sequence) {
+      this.insns = insns;
+      this.sequence = sequence;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return false;
+    }
+
+    @Override
+    public AbstractInsnNode next() {
+      return null;
+    }
   }
 }
