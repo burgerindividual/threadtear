@@ -87,6 +87,7 @@ val runGui by tasks.registering(JavaExec::class) {
 }
 
 tasks.withType<Jar> {
+    dependsOn(":threadtear-core:jar")
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     manifest {
